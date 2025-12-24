@@ -220,6 +220,7 @@ export default function Portfolio() {
               onClick={() => openImage(index)}
             >
               <div className="relative aspect-video bg-dark-900 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={image.src}
                   alt={image.title}
@@ -319,6 +320,7 @@ export default function Portfolio() {
             {/* Image Container */}
             <div className="relative w-full h-[95vh] bg-dark-900 flex items-center justify-center overflow-hidden">
               <div className="relative w-full h-full flex items-center justify-center p-8">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={projectImages[selectedImage]?.src}
                   alt={projectImages[selectedImage]?.title}

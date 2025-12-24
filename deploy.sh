@@ -12,25 +12,27 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose não está instalado. Instale primeiro."
+# Verificar se docker compose está disponível (versão nova integrada)
+if ! docker compose version &> /dev/null; then
+    echo "❌ Docker Compose não está disponível."
+    echo "💡 Tente: docker compose version"
     exit 1
 fi
 
 # Parar containers existentes
 echo "🛑 Parando containers existentes..."
-docker-compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down
 
 # Construir e iniciar containers
 echo "🔨 Construindo e iniciando containers..."
-docker-compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 
 # Verificar status
 echo "✅ Verificando status dos containers..."
-docker-compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml ps
 
 echo ""
 echo "✨ Deploy concluído!"
-echo "📊 Ver logs: docker-compose -f docker-compose.prod.yml logs -f"
-echo "🛑 Parar: docker-compose -f docker-compose.prod.yml down"
+echo "📊 Ver logs: docker compose -f docker-compose.prod.yml logs -f"
+echo "🛑 Parar: docker compose -f docker-compose.prod.yml down"
 

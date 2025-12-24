@@ -81,7 +81,7 @@ export default function About() {
           className="mt-20 text-center"
         >
           <p className="text-lg text-gray-300 max-w-4xl mx-auto italic">
-            "Não importa onde você começa, é como você progride a partir daí."
+            &ldquo;Não importa onde você começa, é como você progride a partir daí.&rdquo;
           </p>
           <p className="text-primary-400 mt-4 font-semibold">— DataStorm</p>
         </motion.div>
