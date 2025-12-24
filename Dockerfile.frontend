@@ -1,0 +1,26 @@
+# Dockerfile para Frontend Next.js
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copiar arquivos de dependências
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Copiar código fonte
+COPY . .
+
+# Desabilitar telemetria do Next.js
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
+
+# Build da aplicação
+RUN npm run build
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["npm", "start"]
+
