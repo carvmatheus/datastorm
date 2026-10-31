@@ -19,7 +19,7 @@ export default function Footer() {
     },
     {
       icon: Mail,
-      href: 'contato@datastorm.cloud',
+      href: 'mailto:contato@datastorm.cloud',
       label: 'Email',
     },
   ]

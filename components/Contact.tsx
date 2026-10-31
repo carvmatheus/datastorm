@@ -13,26 +13,18 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Sem backend de contato: abre o app de e-mail do visitante com a mensagem
+  // preenchida, em vez de simular um envio que não acontece.
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        setSubmitStatus('success')
-        setFormData({ name: '', email: '', message: '' })
-      } else {
-        setSubmitStatus('error')
-      }
+      const subject = `Contato pelo site - ${formData.name}`
+      const body = `${formData.message}\n\n${formData.name}\n${formData.email}`
+      window.location.href = `mailto:contato@datastorm.cloud?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+      setSubmitStatus('success')
     } catch (error) {
       setSubmitStatus('error')
     } finally {
@@ -56,7 +48,7 @@ export default function Contact() {
     {
       icon: Mail,
       label: 'Email',
-      href: 'contato@datastorm.cloud',
+      href: 'mailto:contato@datastorm.cloud',
       color: 'text-primary-400',
     },
   ]
@@ -148,7 +140,7 @@ export default function Contact() {
                 ) : (
                   <>
                     <Send size={20} />
-                    Enviar Mensagem
+                    Enviar por e-mail
                   </>
                 )}
               </motion.button>
@@ -158,7 +150,7 @@ export default function Contact() {
                   animate={{ opacity: 1 }}
                   className="text-primary-400 text-center"
                 >
-                  Mensagem enviada com sucesso!
+                  Abrimos seu app de e-mail com a mensagem. É só enviar por lá. Se nada abriu, escreva para contato@datastorm.cloud.
                 </motion.p>
               )}
               {submitStatus === 'error' && (
@@ -167,7 +159,7 @@ export default function Contact() {
                   animate={{ opacity: 1 }}
                   className="text-red-400 text-center"
                 >
-                  Erro ao enviar mensagem. Tente novamente.
+                  Não foi possível abrir seu app de e-mail. Escreva para contato@datastorm.cloud.
                 </motion.p>
               )}
             </form>
