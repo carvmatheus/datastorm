@@ -1,8 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Menu, X, ChevronDown, ExternalLink } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const projects = [
+  { name: 'Gasto Claro', description: 'Auditoria de gastos SaaS', href: 'https://auditoria-saas.datastorm.cloud' },
+  { name: 'Radar Concorrente', description: 'Monitoramento de concorrentes', href: 'https://monitoramento-concorrentes.datastorm.cloud' },
+  { name: 'Fluxo Documental', description: 'Automação de documentos', href: 'https://automacao-documentos.datastorm.cloud' },
+  { name: 'Contestação em Ordem', description: 'Recuperação de chargebacks', href: 'https://recuperacao-chargeback.datastorm.cloud' },
+  { name: 'Resposta Segura', description: 'Questionários de segurança', href: 'https://questionario-seguranca.datastorm.cloud' },
+  { name: 'Custo de API Claro', description: 'Auditoria de custos de APIs', href: 'https://auditoria-apis.datastorm.cloud' },
+  { name: 'Argumento Comercial', description: 'Inteligência competitiva', href: 'https://inteligencia-competitiva.datastorm.cloud' },
+]
 
 interface NavigationProps {
   isScrolled: boolean
@@ -11,6 +21,26 @@ interface NavigationProps {
 export default function Navigation({ isScrolled }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const [isProjectsOpen, setIsProjectsOpen] = useState(false)
+  const projectsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isProjectsOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (projectsRef.current && !projectsRef.current.contains(e.target as Node)) {
+        setIsProjectsOpen(false)
+      }
+    }
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsProjectsOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [isProjectsOpen])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,6 +123,48 @@ export default function Navigation({ isScrolled }: NavigationProps) {
                 {item.name}
               </a>
             ))}
+            <div className="relative" ref={projectsRef}>
+              <button
+                type="button"
+                onClick={() => setIsProjectsOpen(!isProjectsOpen)}
+                aria-expanded={isProjectsOpen}
+                aria-haspopup="true"
+                className="flex items-center gap-1 text-sm font-medium text-gray-300 hover:text-primary-400 transition-colors"
+              >
+                Projetos
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform ${isProjectsOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              <AnimatePresence>
+                {isProjectsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="absolute right-0 mt-3 w-80 rounded-lg bg-dark-800 border border-dark-700 shadow-xl py-2"
+                  >
+                    {projects.map((project) => (
+                      <a
+                        key={project.href}
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsProjectsOpen(false)}
+                        className="flex items-start justify-between gap-3 px-4 py-2 hover:bg-dark-700 transition-colors"
+                      >
+                        <span>
+                          <span className="block text-sm font-medium text-gray-100">{project.name}</span>
+                          <span className="block text-xs text-gray-400">{project.description}</span>
+                        </span>
+                        <ExternalLink size={14} className="mt-1 shrink-0 text-gray-500" />
+                      </a>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -128,6 +200,26 @@ export default function Navigation({ isScrolled }: NavigationProps) {
                   {item.name}
                 </a>
               ))}
+              <div className="pt-3 border-t border-dark-700">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 pb-2">
+                  Projetos
+                </p>
+                {projects.map((project) => (
+                  <a
+                    key={project.href}
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="block py-2"
+                  >
+                    <span className="block text-gray-300 hover:text-primary-400 transition-colors">
+                      {project.name}
+                    </span>
+                    <span className="block text-xs text-gray-500">{project.description}</span>
+                  </a>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
